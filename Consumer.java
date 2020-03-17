@@ -2,11 +2,12 @@ package com.company;
 
 import java.io.*;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class Consumer implements Runnable
 {
 
-    BlockingQueue<Integer> queue;
+    private BlockingQueue<Integer> queue;
     public Consumer(BlockingQueue<Integer> queue){
         this.queue = queue;
     }
@@ -19,34 +20,23 @@ public class Consumer implements Runnable
             String fileSavingPath = "D:/IntellijProjects/JavaTask3/src/com/company/ProducerConsumerOUT.txt";
             File outputFile = new File(fileSavingPath);
             FileWriter fileWriter = new FileWriter(outputFile);
-            if(!outputFile.exists())
-            {
-                try
-                {
-                    outputFile.createNewFile();
-                }catch(IOException e)
-                {
-                    System.out.println("EROARE 2");
-                    e.printStackTrace();
-                }
-            }
+
             while(true)
             {
-                int data = queue.take();
+                Integer data = queue.poll(100, TimeUnit.MILLISECONDS);
+                if (data == null)
+                {
+                    break;
+                }
                 if(data<100)
                 {
                     data++;
                     fileWriter.write("" + data + '\n' );
-
                 }
-                else if(data>=100)
+                else
                 {
                     data--;
                     fileWriter.write("" + data + '\n' );
-                }
-                else if(queue.isEmpty())
-                {
-                    break;
                 }
              /*   try
                 {
@@ -55,15 +45,11 @@ public class Consumer implements Runnable
                 {
                     e.printStackTrace();
                 }   */
-            }
 
-        }catch(FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }catch(IOException e)
-        {
-            e.printStackTrace();
-        }catch(InterruptedException e)
+            }
+            fileWriter.close();
+
+        }catch(IOException|InterruptedException e )
         {
             e.printStackTrace();
         }

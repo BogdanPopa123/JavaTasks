@@ -8,34 +8,20 @@ import java.util.Scanner;
 
 public class Producer implements Runnable {
 
-    BlockingQueue<Integer> queue;
+    private BlockingQueue<Integer> queue;
+    private File savingFile;
 
-    public Producer(BlockingQueue<Integer> queue){
-        this.queue=queue;
+    public Producer(BlockingQueue<Integer> queue, File savingFile) {
+        this.queue = queue;
+        this.savingFile = savingFile;
     }
 
     @Override
     public void run(){
-        try{
-            String fileSavingPath = "D:/IntellijProjects/JavaTask3/src/com/company/ProducerConsumerIN.txt";
-            File savingFile = new File(fileSavingPath);
-            if(!savingFile.exists())
-            {
-                try
-                {
-                    savingFile.createNewFile();
-                }catch(IOException e)
-                {
-                    System.out.println("EROARE");
-                    e.printStackTrace();
-                }
-            }
-            Scanner Scanner = new Scanner(savingFile);
-            while(Scanner.hasNextLine())
-            {
-                String data = Scanner.nextLine();
-                int reqdata = Integer.parseInt(data);
-                queue.add(reqdata);
+        try (Scanner scanner = new Scanner(savingFile)) {
+            while (scanner.hasNextLine()) {
+                String data = scanner.nextLine();
+                addInQueue(data);
            /*     try{
                     Thread.sleep(100);
                 }catch(InterruptedException e){
@@ -43,10 +29,22 @@ public class Producer implements Runnable {
                 }      */
 
             }
-        }catch(FileNotFoundException e){
+        }  catch(FileNotFoundException e){
             System.out.println("The file doesn't exist");
             e.printStackTrace();
         }
 
+
+    }
+
+    private void addInQueue(String data) {
+        try
+        {
+            int reqdata = Integer.parseInt(data);
+            queue.add(reqdata);
+        }  catch(NumberFormatException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

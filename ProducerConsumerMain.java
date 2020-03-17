@@ -1,6 +1,7 @@
 package com.company;
 
 
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -13,11 +14,20 @@ import java.io.File;
  */
 
 
-public class Main {
+public class ProducerConsumerMain {
 
     public static void main(String[] args) {
+
+        String fileSavingPath = "D:/IntellijProjects/JavaTask3/src/com/company/ProducerConsumerIN.txt";
+        File savingFile = new File(fileSavingPath);
+        if(!savingFile.exists())
+        {
+            System.err.println("Input file not found");
+            System.exit(2);
+        }
+
         BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(1000000);
-        Thread producer = new Thread(new Producer(queue));
+        Thread producer = new Thread(new Producer(queue, savingFile));
         Thread consumer = new Thread(new Consumer(queue));
 
         producer.start();
