@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- bean definitions here -->
+
+    <bean id = "EmployeeId" class="models.EmployeeModel" >
+
+        <property name="id" value = "1"/>
+        <property name="fullName" value = "Ion Ion"/>
+        <property name="occupation" value="CEO"/>
+        <property name="salary" value ="100000"/>
+        <property name="dateOfEmployment"  >
+            <bean factory-bean="dateFormat" factory-method="parse">
+                <constructor-arg value="05-05-2005" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="dateFormat" class="java.text.SimpleDateFormat">
+        <constructor-arg value="dd-MM-yyyy" />
+    </bean>
+
+
+
+
+</beans>
